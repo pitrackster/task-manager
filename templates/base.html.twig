@@ -1,12 +1,91 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      Task Manager -{% block title %}
+        Accueil
+      {% endblock %}
+    </title>
+    {% block stylesheets %}
+      {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+  </head>
+  <body>
+    <!-- NAV BAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Task Manager</a>
+      <button class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item {% if active == 'home' %} active {% endif %}">
+            <a class="nav-link" href="{{ path('home') }}">
+              Ajouter un évènement
+            </a>
+          </li>
+          <li class="nav-item {% if active == 'stats' %} active {% endif %}" >
+            <a class="nav-link" href="{{ path('stats') }}">Statistiques</a>
+          </li>
+          <li class="nav-item {% if active == 'categories' %} active {% endif %}">
+            <a class="nav-link" 
+              data-toggle="tooltip"
+              title="Gérer les catégories"
+              href="{{ path('category_index') }}">
+              Catégories
+            </a>
+          </li>
+          <li class="nav-item {% if active == 'tasks' %} active {% endif %}">
+            <a class="nav-link"
+              data-toggle="tooltip"
+              title="Gérer les tâches"
+              href="{{ path('task_index') }}">
+              Tâches
+            </a>
+          </li>
+          <li class="nav-item {% if active == 'events' %} active {% endif %}">
+            <a class="nav-link"
+              data-toggle="tooltip"
+              title="Gérer les évènements"
+              href="{{ path('event_index') }}">
+              Évènements
+            </a>
+          </li>
+		  <li class="nav-item {% if active == 'holidays' %} active {% endif %}">
+            <a class="nav-link"
+              data-toggle="tooltip"
+              title="Gérer les vacances"
+              href="{{ path('holiday_index') }}">
+              Vacances
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid content">
+      {% for label, messages in app.flashes %}
+        {% for message in messages %}
+          <div class="alert alert-{{ label }} alert-dismissible fade show">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endfor %}
+      {% block body %}
+
+      {% endblock %}
+    </div>
+
+    {% block javascripts %}
+      {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+  </body>
 </html>

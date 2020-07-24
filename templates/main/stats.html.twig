@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Statistiques
+{% endblock %}
+
+{% block body %}
+  <!-- date filter -->
+  <div class="card card-gap card-pad">
+    <div class="row">
+      <div class="col-sm-10">
+        <form method="get" action="{{ path('stats') }}">
+          <div class="form-row">
+            <div class="col">
+              <input type="date"
+                max="{{ max|date('Y-m-d') }}"
+                name="start"
+                value="{{ start|date('Y-m-d') }}"
+                class="form-control"
+                placeholder="Date de début" />
+            </div>
+            <div class="col">
+              <input type="date"
+                name="end"
+                value="{{ end|date('Y-m-d') }}"
+                class="form-control"
+                placeholder="Date de fin" />
+            </div>
+            <div class="col">
+              <button class="btn btn-light"><i class="fa fa-redo"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-2 text-right">
+        <form>
+          <button class="btn btn-light"
+            data-toggle="tooltip"
+            title="Exporter la periode en excel">
+            <i class="fa fa-file-excel"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% set totalHours = 0 %}
+  {% set totalPercent = 0 %}
+
+  {% for category in data %}
+    {% set catTotalHours = category.computeTotalHours %}
+    {% set totalHours = totalHours + catTotalHours %}
+    {% set totalPercent = totalPercent + category.computeTotalPercent(hours) %}
+    <div class="card card-gap">
+      <div class="card-header card-togglable">
+        <div class="row">
+          <div class="col">
+            {{ category.name }}
+          </div>
+          <div class="col text-right">
+            <span class="badge badge-success">{{ catTotalHours }}h</span>
+            <span class="badge badge-info">
+              {{ category.computeTotalPercent(hours) }}%
+            </span>
+            <span class="badge badge-warning"
+              title="Nombre de jours"
+              data-toggle="tooltip">
+              {{ category.getHoursAsDays(catTotalHours, hoursPerDay) }}j
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body" style="display:none;">
+        {% for task in category.tasks %}
+          {% set taskTotalHours = task.computeTotalHours %}
+          <div class="card card-gap">
+            <div class="card-header card-togglable">
+              <div class="row">
+                <div class="col">
+                  {{ task.name }}
+                </div>
+                <div class="col text-right">
+                  <span class="badge badge-success">{{ taskTotalHours }}h</span>
+                  <span class="badge badge-info"
+                    title="Pourcentage pour la catégorie"
+                    data-toggle="tooltip">
+                    {{ task.computeTotalPercent(catTotalHours) }}%
+                  </span>
+                  <span class="badge badge-warning"
+                    title="Nombre de jours"
+                    data-toggle="tooltip">
+                    {{ task.getHoursAsDays(taskTotalHours, hoursPerDay) }}j
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="display:none;">
+              <div class="card card-gap">
+                {% if task.events.count > 0 %}
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="col-sm-5" scope="col">
+                          Date
+                        </th>
+                        <th class="col-sm-5" scope="col">
+                          Durée (h)
+                        </th>
+                        <th class="col-sm-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for event in task.events %}
+                        <tr>
+                          <td>
+                            {{ event.date|date('d/m/Y') }}
+                          </td>
+                          <td>
+                            {{ event.duration }}
+                          </td>
+                          <td class="text-right">
+                            <div class="btn-group">
+                              <a class="btn btn-link"
+                                title="Modifier"
+                                data-toggle="tooltip"
+                                href="{{
+                                path(
+                                  'event_edit',
+                                  {
+                                    id: event.id
+                                  }
+                                )
+                                }}">
+                                <i class="fa fa-pencil-alt"></i>
+                              </a>
+                              <a class="btn btn-link"
+                                title="Supprimer"
+                                data-toggle="tooltip"
+                                href="{{
+                                path(
+                                  'event_delete',
+                                  {
+                                    id: event.id
+                                  }
+                                )
+                                }}">
+                                <i class="fa fa-trash"></i>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% else %}
+                  Aucun évènement associé à la tâche {{ task.name }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="card card-gap card-pad alert alert-info">
+    <div class="row">
+      <div class="col-sm-12">
+        Période sélectionnée {{ workingDays }} jours soit {{ hours }} heures.
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        Nombre de jours de congés sur la période {{ holidayDays }}.
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-sm-12">
+        Totaux {{ totalHours }} heures travaillées sur {{ hours }} heures - {{ totalPercent }}% du temps utilisé.
+      </div>
+    </div>
+  </div>
+{% endblock %}

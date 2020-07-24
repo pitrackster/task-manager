@@ -1,0 +1,17 @@
+// customize some Bootstrap variables
+$primary: darken(#428bca, 20%);
+
+// the ~ allows you to reference things in node_modules
+@import "~bootstrap/scss/bootstrap";
+
+.content {
+    margin-top: 15px;
+}
+
+.card-gap {
+    margin-bottom: 15px;
+}
+
+.card-pad {
+    padding: 15px;
+}

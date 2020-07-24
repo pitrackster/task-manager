@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Event index
+{% endblock %}
+
+{% block body %}
+  <h1>
+    Évènements
+  </h1>
+  <hr />
+  <table class="table data-table">
+    <thead>
+      <tr>
+        <th>
+          Id
+        </th>
+        <th>
+          Duration
+        </th>
+        <th>
+          Date
+        </th>
+        <th>
+          Tâche
+        </th>
+        <th>
+          actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+        <tr>
+          <td>
+            {{ event.id }}
+          </td>
+          <td>
+            {{ event.duration }}
+          </td>
+          <td>
+            {{ event.date ? event.date|date('d/m/Y') : '' }}
+          </td>
+          <td>
+            {{ event.task.name }}
+          </td>
+          <td>
+            <div class="btn-group">
+              <a class="btn btn-light"
+                href="{{
+                path(
+                  'event_show',
+                  {
+                    id: event.id
+                  }
+                )
+                }}">
+                 {{ 'form.details' |trans }}
+              </a>
+              <a class="btn btn-light"
+                href="{{
+                path(
+                  'event_edit',
+                  {
+                    id: event.id
+                  }
+                )
+                }}">
+                 {{ 'form.edit' |trans }}
+              </a>
+              <form method="post"
+                action="{{
+                path(
+                  'event_delete',
+                  {
+                    id: event.id
+                  }
+                )
+                }}"
+                onsubmit="return confirm('Sûr?');">
+                <input type="hidden" name="_method" value="DELETE" />
+                <input type="hidden"
+                  name="_token"
+                  value="{{ csrf_token('delete' ~ event.id) }}" />
+                <button class="btn btn-light">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="4">
+            Aucun évènement
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{{ path('event_new') }}"> {{ 'form.add' |trans }}</a>
+{% endblock %}

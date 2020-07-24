@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tâches{% endblock %}
+
+{% block body %}
+    <h1>Tâches</h1>
+    <hr/>   
+    <table class="table data-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Catégorie</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.name }}</td>               
+                <td>{{ task.category.name }}</td>           
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-light" href="{{ path('task_show', {'id': task.id}) }}">Voir</a>
+                        <a class="btn btn-light" href="{{ path('task_edit', {'id': task.id}) }}">Modifier</a>
+                         <form method="post" action="{{ path('task_delete', {'id': task.id}) }}" onsubmit="return confirm('Sûr?');">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                            <button class="btn btn-light"><i class="fa fa-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucune tâche pour l'instant</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('task_new') }}">Créer</a>
+{% endblock %}
+
+

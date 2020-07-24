@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Holiday{% endblock %}
+
+{% block body %}
+    <h1>Holiday</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ holiday.id }}</td>
+            </tr>
+            <tr>
+                <th>Start</th>
+                <td>{{ holiday.start ? holiday.start|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>End</th>
+                <td>{{ holiday.end ? holiday.end|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('holiday_index') }}">back to list</a>
+
+    <a href="{{ path('holiday_edit', {'id': holiday.id}) }}">edit</a>
+
+    {{ include('holiday/_delete_form.html.twig') }}
+{% endblock %}

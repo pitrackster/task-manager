@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Category{% endblock %}
+
+{% block body %}
+    <h1>Edit Category</h1>
+
+    {{ include('category/_form.html.twig', {'trans_key': 'form.edit'}) }}
+
+    <a href="{{ path('category_index') }}"> {{ 'form.back.to.list' |trans }}</a>
+
+    {{ include('category/_delete_form.html.twig') }}
+{% endblock %}
