@@ -93,10 +93,15 @@ class MainController extends AbstractController
     */
     public function stats(CategoryRepository $repository, StatsHelper $statsHelper, TranslatorInterface $trans, Request $request)
     {
-        $start = new \DateTime();
+        $monday = strtotime("last monday");
+        // si on est un lundi ajouter une semaine
+        $monday = date('w', $monday) === date('w') ? $monday + 7 * 86400 : $monday;
+        $friday = strtotime(date("Y-m-d", $monday)." +4 days");
+ 
+        $start = new \DateTime(date('Y-m-d', $monday));
         $max = new \DateTime();
-        $start->sub(\DateInterval::createFromDateString('1 week'));
-        $end = new \DateTime();
+        $end = new \DateTime(date('Y-m-d', $friday));
+ 
 
         if ($request->query->get('start')) {
             $start = new \DateTime($request->query->get('start'));
@@ -107,13 +112,15 @@ class MainController extends AbstractController
         }
 
         $hours_per_day = $this->getParameter('hours_per_day');
+        // find categories / tasks / events in date range
+        $data = $repository->findInDateRange($start, $end);
         $days = $statsHelper->getWorkingDaysForPeriod($start, $end);
         $nbHolidayDays = $statsHelper->getHolidayDaysForPeriod($start, $end);
        
+       
         $periodTotalHours = $days * $hours_per_day;
 
-        // find categories / tasks / events in date range
-        $data = $repository->findInDateRange($start, $end);
+        
 
         return $this->render('main/stats.html.twig', [
             'data' =>   $data,

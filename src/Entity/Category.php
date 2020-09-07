@@ -99,6 +99,10 @@ class Category
 
     public function computeTotalPercent($hours)
     {
+        if ($hours == 0) {
+            return 0;
+        }
+        
         $totalHours = $this->computeTotalHours();
 
         return round($totalHours * 100 / $hours);

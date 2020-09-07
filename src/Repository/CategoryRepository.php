@@ -22,33 +22,20 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function findInDateRange($from, $to)
     {
-        return $this->createQueryBuilder('c')
-             ->leftJoin('c.tasks', 't')
-             ->leftJoin('t.events', 'e')
-             ->where('e.date >= :start')
-             ->andWhere('e.date <= :end')
-             ->orWhere('e.date IS NULL')
-             ->setParameter('start', $from)
-             ->setParameter('end', $to)
-             ->orderBy('e.date', 'DESC')
-             ->addOrderBy('e.date', 'DESC')
-             ->getQuery()
-             ->getResult();
-
-        /* $entityManager = $this->getEntityManager();
-         $query = $entityManager->createQuery(
-             'SELECT c,t,e
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT c,t,e
                  FROM App\Entity\Category c
                  LEFT JOIN c.tasks t
                  LEFT JOIN t.events e
                  WHERE e.date >= :start AND e.date <= :end OR e.date IS NULL
                  ORDER BY e.date DESC'
-         )
+        )
              ->setParameter('start', $from)
              ->setParameter('end', $to)
              ;
 
-         return $query->getResult();*/
+        return $query->getResult();
     }
 
     // /**

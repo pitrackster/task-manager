@@ -60,4 +60,4 @@ CustomLog /var/log/apache2/task-manager-access.log combined
 ## TODO
 
 - excel export https://phpspreadsheet.readthedocs.io
-- simple API (view stats, add event)
+- simple API (view stats, add event, list event with edit and delete)

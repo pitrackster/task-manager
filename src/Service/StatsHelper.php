@@ -36,6 +36,9 @@ class StatsHelper
                 $days--;
             }
         }
+
+        // the diff between two dates will give the number of days between those 2 dates so... we need to add one day
+        $days += 1;
         
         return $days;
     }
@@ -50,6 +53,8 @@ class StatsHelper
         foreach ($holidays as $holiday) {
             $hstart = $holiday->getStart();
             $hend = $holiday->getEnd();
+            // le DateTime::diff ne compte n'inclue pas les bornes... il faut donc ajouter un jour pour avoir le bon intervale
+            //$hend->modify('+1 day');
 
             if ($holiday->getStart() < $start) {
                 $hstart = $start;
@@ -63,8 +68,12 @@ class StatsHelper
                 $hend->modify('+1 day');
             }
 
+            // echo 'start ' . $hstart->format('Y-m-d H:i:s') . ' end ' . $hend->format('Y-m-d H:i:s');
+
             $hdiff = $hstart->diff($hend);
             $nbHolidayDays = $hdiff->format('%a');
+
+            // echo 'nb holidays ' . $nbHolidayDays;
             $nbDays += $nbHolidayDays;
         }
       
