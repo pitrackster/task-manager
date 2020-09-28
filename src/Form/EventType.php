@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class EventType extends AbstractType
 {
@@ -29,6 +30,9 @@ class EventType extends AbstractType
                     return $task->getCategory()->getName() . ' - ' . $task->getName();
                 },
                 'label' => 'Tâche associée'
+            ])
+            ->add('comments', TextareaType::class, [
+                'label' => 'Commentaires'
             ])
         ;
     }

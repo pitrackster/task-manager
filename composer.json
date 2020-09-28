@@ -12,6 +12,7 @@
         "doctrine/orm": "^2.7",
         "friendsofsymfony/jsrouting-bundle": "^2.6",
         "phpdocumentor/reflection-docblock": "^5.1",
+        "phpoffice/phpspreadsheet": "^1.14",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.1.*",

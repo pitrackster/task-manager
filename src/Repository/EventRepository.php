@@ -32,6 +32,34 @@ class EventRepository extends ServiceEntityRepository
         return $query->getSingleScalarResult();
     }
 
+    public function getEventByDateAndTask($date, $task)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            'SELECT SUM(e.duration)
+                FROM App\Entity\Event e
+                WHERE e.date = :date 
+                AND e.task = :task'
+        )->setParameter('date', $date)->setParameter('task', $task);
+        return $query->getSingleScalarResult();
+    }
+
+    public function getEventTotalByTask($task, $start, $end)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            'SELECT SUM(e.duration)
+                FROM App\Entity\Event e
+                WHERE e.date <= :end
+                AND e.date >= :start 
+                AND e.task = :task'
+        )
+        ->setParameter('start', $start)
+        ->setParameter('task', $task)
+        ->setParameter('end', $end);
+        return $query->getSingleScalarResult();
+    }
+
     // /**
     //  * @return Event[] Returns an array of Event objects
     //  */

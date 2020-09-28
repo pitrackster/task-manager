@@ -33,6 +33,11 @@ class Event
      */
     private $date;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $Comments;
+
     public function __construct()
     {
         $this->date = new \DateTime();
@@ -75,6 +80,18 @@ class Event
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getComments(): ?string
+    {
+        return $this->Comments;
+    }
+
+    public function setComments(?string $Comments): self
+    {
+        $this->Comments = $Comments;
 
         return $this;
     }

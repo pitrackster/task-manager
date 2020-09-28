@@ -33,8 +33,11 @@
         </form>
       </div>
       <div class="col-sm-2 text-right">
-        <form>
-          <button class="btn btn-light"
+        <form method="get" action="{{ path('stats') }}">
+          <input type="hidden" name="action" value="export"/>
+          <input type="hidden" name="start" value="{{ start|date('Y-m-d') }}" />
+          <input type="hidden" name="end" value="{{ end|date('Y-m-d') }}" />
+          <button type="submit" class="btn btn-light"
             data-toggle="tooltip"
             title="Exporter la periode en excel">
             <i class="fa fa-file-excel"></i>

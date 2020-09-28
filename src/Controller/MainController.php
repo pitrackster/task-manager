@@ -12,6 +12,9 @@ use App\Form\EventType;
 use App\Service\StatsHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class MainController extends AbstractController
 {
     /**
@@ -120,7 +123,58 @@ class MainController extends AbstractController
        
         $periodTotalHours = $days * $hours_per_day;
 
-        
+        if ($request->query->get('action')) {
+            $action = $request->query->get('action');
+            if ($action === 'export') {
+                // \PhpOffice\PhpSpreadsheet\Shared\File::setUseUploadTempDirectory(true);
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+
+                $line = 2;
+                $datesArray = $this->getDatesFromRange($start, $end);
+                foreach ($data as $cat) {
+                    
+                    // write cat header
+                    $sheet->setCellValue('A'.$line, $cat->getName());
+                    $headerArray = $datesArray;
+                    array_unshift($headerArray, $cat->getName());
+                    //array_push($headerArray, 'Total');
+                    $headerArray[] = 'Total';
+                    $spreadsheet->getActiveSheet()
+                        ->fromArray(
+                            $headerArray,
+                            null,
+                            'A'.$line
+                        );
+                    $line++;
+                    $tasks = $cat->getTasks();
+                    foreach ($tasks as $task) {
+                        $sheet->setCellValue('A'.$line, $task->getName());
+                        $events = $statsHelper->getTasksFromCatAndDates($datesArray, $task);
+                   
+                        $spreadsheet->getActiveSheet()
+                            ->fromArray(
+                                $events,
+                                null,
+                                'B'.$line
+                            );
+                        $line++;
+                    }
+
+                    $line += 4;
+                }
+
+                $sheet->setCellValue('A1', 'Export de l\'activité de ' . $start->format('d-m-Y') . ' à ' . $end->format('d-m-Y'));
+
+                $writer = new Xlsx($spreadsheet);
+                $dir = $this->getParameter('kernel.project_dir');
+     
+                $date = new \DateTime();
+                $dToString = $date->format('Ymd_His');
+                $filename = $dToString . '_export.xlsx';
+                $writer->save($dir . '/var/' .  $filename);
+            }
+        }
 
         return $this->render('main/stats.html.twig', [
             'data' =>   $data,
@@ -134,6 +188,32 @@ class MainController extends AbstractController
             'active' => 'stats'
         ]);
     }
+
+    public function getDatesFromRange($start, $end, $format = 'd-m-Y')
+    {
+      
+        // Declare an empty array
+        $array = array();
+          
+        // Variable that store the date interval
+        // of period 1 day
+        $interval = new \DateInterval('P1D');
+      
+        $realEnd = $end;
+        $realEnd->add($interval);
+      
+        $period = new \DatePeriod($start, $interval, $realEnd);
+      
+        // Use loop to store date into array
+        foreach ($period as $date) {
+            $array[] = $date->format($format);
+        }
+      
+        // Return the array elements
+        return $array;
+    }
+
+   
 
     /**
     * @Route("/check-time", name="check_time", methods={"POST"})

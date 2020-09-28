@@ -4,18 +4,22 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\HolidayRepository;
+use App\Repository\EventRepository;
 
 class StatsHelper
 {
     protected $em;
     protected $hrepository;
+    protected $erepository;
 
     public function __construct(
         EntityManagerInterface $em,
-        HolidayRepository $hrepository
+        HolidayRepository $hrepository,
+        EventRepository $eventRepository
     ) {
         $this->em = $em;
         $this->hrepository = $hrepository;
+        $this->erepository = $eventRepository;
     }
 
 
@@ -78,5 +82,19 @@ class StatsHelper
         }
       
         return $nbDays;
+    }
+
+    public function getTasksFromCatAndDates($dates, $task)
+    {
+        $events = [];
+        foreach ($dates as $date) {
+            $d = new \DateTime($date);
+            $events[] = $this->erepository->getEventByDateAndTask($d, $task);
+        }
+        $start = new \DateTime($dates[0]);
+        $end = new \DateTime($dates[count($dates) - 1]);
+        $events[] = $this->erepository->getEventTotalByTask($task, $start, $end);
+
+        return $events;
     }
 }
