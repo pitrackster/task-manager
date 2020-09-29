@@ -83,11 +83,18 @@ class MainController extends AbstractController
         }
 
         // /FORM
+
+        // today's data
+        $today = new \DateTime();
+        $todayTimeLeft = $repository->getTimeLeftForADate($today->format('Y-m-d'));
+        $todayEvents = $repository->getEventsByDate($today->format('Y-m-d'));
         
         return $this->render('main/index.html.twig', [
             'form' => $form->createView(),
             'max' => $max,
-            'active' => 'home'
+            'active' => 'home',
+            'todayTimeLeft' => $todayTimeLeft,
+            'events' => $todayEvents
         ]);
     }
 

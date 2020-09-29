@@ -27,9 +27,21 @@ class EventRepository extends ServiceEntityRepository
                 FROM App\Entity\Event e
                 WHERE e.date = :date'
         )
-            ->setParameter('date', $date);
+        ->setParameter('date', $date);
 
         return $query->getSingleScalarResult();
+    }
+
+    public function getEventsByDate($date)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            'SELECT e
+                FROM App\Entity\Event e
+                WHERE e.date = :date'
+        )
+        ->setParameter('date', $date);
+        return $query->getResult();
     }
 
     public function getEventByDateAndTask($date, $task)

@@ -5,7 +5,96 @@
 {% endblock %}
 
 {% block body %}
+ <div class="alert alert-info">
+      Temps renseigné pour aujourd'hui: {{ todayTimeLeft }} heures
+  </div>    
+  <hr/>  
   <div class="card card-gap card-pad">
     {{ include('event/_form.html.twig') }}
   </div>
+  <hr/>  
+
+  <div class="card">
+      <div class="card-header">
+        Activités du jour
+      </div>
+       <div class="card-body">
+        {% if events | length > 0 %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                  Catégorie - Tâche 
+                </th>
+                <th>
+                  Durée (h)
+                </th>
+                <th>
+                  
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for event in events %}
+                <tr>
+                  <td>
+                    {{event.task.category.name}} - {{ event.task.name }} 
+                  </td>        
+                  <td>
+                    {{ event.duration }}
+                  </td>         
+                  <td class="text-right">
+                    <div class="btn-group">
+                      <a class="btn btn-link text-dark"
+                        href="{{
+                        path(
+                          'event_show',
+                          {
+                            id: event.id
+                          }
+                        )
+                        }}">
+                        <i class="fa fa-eye"></i>
+                      </a>
+                      <a class="btn btn-link text-dark"
+                        href="{{
+                        path(
+                          'event_edit',
+                          {
+                            id: event.id
+                          }
+                        )
+                        }}">
+                        <i class="fa fa-pencil-alt"></i>
+                      </a>
+                      <form method="post"
+                        action="{{
+                        path(
+                          'event_delete',
+                          {
+                            id: event.id
+                          }
+                        )
+                        }}"
+                        onsubmit="return confirm('Sûr?');">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <input type="hidden"
+                          name="_token"
+                          value="{{ csrf_token('delete' ~ event.id) }}" />
+                        <button type="submit" class="btn btn-link text-danger">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+            <h5>T'as rien foutu aujourd'hui...</h5>
+          {% endif %}  
+       </div>
+  </div>
+        
 {% endblock %}
