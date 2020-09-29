@@ -9,8 +9,13 @@
       Temps renseigné pour aujourd'hui: {{ todayTimeLeft }} heures
   </div>    
   <hr/>  
-  <div class="card card-gap card-pad">
-    {{ include('event/_form.html.twig') }}
+  <div class="card card-gap">
+     <div class="card-header">
+        Créer un nouvel évènement
+      </div>
+      <div class="card-body">
+        {{ include('event/_form.html.twig') }}
+      </div>
   </div>
   <hr/>  
 
