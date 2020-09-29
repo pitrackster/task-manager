@@ -32,7 +32,8 @@ class EventType extends AbstractType
                 'label' => 'Tâche associée'
             ])
             ->add('comments', TextareaType::class, [
-                'label' => 'Commentaires'
+                'label' => 'Commentaires',
+                'required' => false
             ])
         ;
     }
