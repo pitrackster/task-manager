@@ -132,20 +132,20 @@ class MainController extends AbstractController
 
         if ($request->query->get('action')) {
             $action = $request->query->get('action');
+            // export to excel
             if ($action === 'export') {
-                // \PhpOffice\PhpSpreadsheet\Shared\File::setUseUploadTempDirectory(true);
                 $spreadsheet = new Spreadsheet();
                 $sheet = $spreadsheet->getActiveSheet();
+                // write sheet title
+                $sheet->setCellValue('A1', 'Export de l\'activité de ' . $start->format('d-m-Y') . ' à ' . $end->format('d-m-Y'));
 
                 $line = 2;
                 $datesArray = $this->getDatesFromRange($start, $end);
                 foreach ($data as $cat) {
-                    
                     // write cat header
                     $sheet->setCellValue('A'.$line, $cat->getName());
                     $headerArray = $datesArray;
                     array_unshift($headerArray, $cat->getName());
-                    //array_push($headerArray, 'Total');
                     $headerArray[] = 'Total';
                     $spreadsheet->getActiveSheet()
                         ->fromArray(
@@ -157,8 +157,8 @@ class MainController extends AbstractController
                     $tasks = $cat->getTasks();
                     foreach ($tasks as $task) {
                         $sheet->setCellValue('A'.$line, $task->getName());
+                        // build an array of event with null values if no event for the given date
                         $events = $statsHelper->getTasksFromCatAndDates($datesArray, $task);
-                   
                         $spreadsheet->getActiveSheet()
                             ->fromArray(
                                 $events,
@@ -171,15 +171,17 @@ class MainController extends AbstractController
                     $line += 4;
                 }
 
-                $sheet->setCellValue('A1', 'Export de l\'activité de ' . $start->format('d-m-Y') . ' à ' . $end->format('d-m-Y'));
-
                 $writer = new Xlsx($spreadsheet);
-                $dir = $this->getParameter('kernel.project_dir');
-     
+                // $dir = $this->getParameter('kernel.project_dir');
                 $date = new \DateTime();
                 $dToString = $date->format('Ymd_His');
                 $filename = $dToString . '_export.xlsx';
-                $writer->save($dir . '/var/' .  $filename);
+                // download file
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header("Content-Disposition: attachment; filename=\"{$filename}\"");
+                $writer->save('php://output');
+                exit();
+                // $writer->save($dir . '/var/' .  $filename);
             }
         }
 
