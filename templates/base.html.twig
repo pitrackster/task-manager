@@ -29,7 +29,7 @@
         <ul class="navbar-nav mr-auto">
           <li class="nav-item {% if active == 'home' %} active {% endif %}">
             <a class="nav-link" href="{{ path('home') }}">
-              Ajouter un évènement
+              Accueil
             </a>
           </li>
           <li class="nav-item {% if active == 'stats' %} active {% endif %}" >
@@ -40,7 +40,7 @@
               data-toggle="tooltip"
               title="Gérer les catégories"
               href="{{ path('category_index') }}">
-              Catégories
+              Gérer les catégories
             </a>
           </li>
           <li class="nav-item {% if active == 'tasks' %} active {% endif %}">
@@ -48,7 +48,7 @@
               data-toggle="tooltip"
               title="Gérer les tâches"
               href="{{ path('task_index') }}">
-              Tâches
+              Gérer les tâches
             </a>
           </li>
           <li class="nav-item {% if active == 'events' %} active {% endif %}">
@@ -56,7 +56,7 @@
               data-toggle="tooltip"
               title="Gérer les évènements"
               href="{{ path('event_index') }}">
-              Évènements
+              Gérer les évènements
             </a>
           </li>
 		  <li class="nav-item {% if active == 'holidays' %} active {% endif %}">
@@ -64,7 +64,7 @@
               data-toggle="tooltip"
               title="Gérer les vacances"
               href="{{ path('holiday_index') }}">
-              Vacances
+              Gérer les vacances
             </a>
           </li>
         </ul>

@@ -6,18 +6,22 @@
 
 {% block body %}
  <div class="alert alert-info">
+      {% if todayTimeLeft and todayTimeLeft > 0 %}
       Temps renseigné pour aujourd'hui: {{ todayTimeLeft }} heures
+      {% else %}
+       Aucun temps renseigné pour aujourd'hui
+      {% endif %}
   </div>    
   <hr/>  
   <div class="card card-gap">
      <div class="card-header">
-        Créer un nouvel évènement
+          Créer un nouvel évènement
       </div>
       <div class="card-body">
         {{ include('event/_form.html.twig') }}
       </div>
   </div>
-  <hr/>  
+  <hr/> 
 
   <div class="card">
       <div class="card-header">
@@ -97,7 +101,7 @@
             </tbody>
           </table>
           {% else %}
-            <h5>T'as rien foutu aujourd'hui...</h5>
+            T'as rien foutu aujourd'hui... (encore)
           {% endif %}  
        </div>
   </div>

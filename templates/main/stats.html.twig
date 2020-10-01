@@ -15,6 +15,7 @@
               <input type="date"
                 max="{{ max|date('Y-m-d') }}"
                 name="start"
+                id="date-start"
                 value="{{ start|date('Y-m-d') }}"
                 class="form-control"
                 placeholder="Date de début" />
@@ -22,6 +23,7 @@
             <div class="col">
               <input type="date"
                 name="end"
+                id="date-end"
                 value="{{ end|date('Y-m-d') }}"
                 class="form-control"
                 placeholder="Date de fin" />
@@ -34,10 +36,17 @@
       </div>
       <div class="col-sm-2 text-right">
         <form method="get" action="{{ path('stats') }}">
-          <input type="hidden" name="action" value="export"/>
-          <input type="hidden" name="start" value="{{ start|date('Y-m-d') }}" />
-          <input type="hidden" name="end" value="{{ end|date('Y-m-d') }}" />
-          <button type="submit" class="btn btn-light"
+          <input type="hidden" name="action" value="export" />
+          <input type="hidden"
+            id="date-start-hidden"
+            name="start"
+            value="{{ start|date('Y-m-d') }}" />
+          <input type="hidden"
+            id="date-end-hidden"
+            name="end"
+            value="{{ end|date('Y-m-d') }}" />
+          <button type="submit"
+            class="btn btn-light"
             data-toggle="tooltip"
             title="Exporter la periode en excel">
             <i class="fa fa-file-excel"></i>
@@ -179,11 +188,17 @@
       </div>
     </div>
 
-
     <div class="row">
       <div class="col-sm-12">
-        Totaux {{ totalHours }} heures travaillées sur {{ hours }} heures - {{ totalPercent }}% du temps utilisé.
+        Totaux {{ totalHours }} heures travaillées sur {{ hours }} heures - {{
+          totalPercent
+        }}% du temps utilisé.
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('stats') }}
 {% endblock %}
